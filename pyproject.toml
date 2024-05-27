@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "todo-table"
+version = "0.1.0"
+description = ""
+authors = ["famazak <zakfama58@gmail.com>"]
+readme = "README.md"
+packages = [{include = "todo_table", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.7.1"
+prettytable = "^3.10.0"
+click = "^8.1.7"
+fire = "^0.6.0"
+
+[tool.poetry.scripts]
+todotable = "todo_table.cli:cli"
+firetodotable = "todo_table.fire_cli:fire_cli"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+pytest-mock = "^3.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
