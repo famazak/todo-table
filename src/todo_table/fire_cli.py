@@ -22,10 +22,11 @@ class TodoTableCLI:
         write_todos_to_file(todos=todos, todos_file=TODO_TABLE_FILE)
 
     def done(self, id: int) -> None:
+        offset_id = id - 1  # to offset adding 1 to the index in show
         todos = load_todos_from_file(todos_file=TODO_TABLE_FILE)
-        todo = fetch_todo(todos=todos, id=id)
+        todo = fetch_todo(todos=todos, id=offset_id)
         if todo is not None:
-            del todos.todos[id]
+            del todos.todos[offset_id]
             print(f"Todo {todo.name} completed")
             write_todos_to_file(todos=todos, todos_file=TODO_TABLE_FILE)
         else:
@@ -38,8 +39,15 @@ class TodoTableCLI:
         todos = load_todos_from_file(todos_file=TODO_TABLE_FILE)
 
         for index, todo in enumerate(todos.todos):
+            table_index = index + 1  # so the ids start at 1
             table.add_row(
-                [index, todo.name, todo.created_at, todo.completed_at, todo.due_date]
+                [
+                    table_index,
+                    todo.name,
+                    todo.created_at,
+                    todo.completed_at,
+                    todo.due_date,
+                ]
             )
 
         print(table)
