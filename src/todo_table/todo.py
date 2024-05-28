@@ -1,7 +1,7 @@
 from datetime import datetime
 from itertools import count
 from typing import Optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 def current_time_formatted() -> str:
@@ -39,7 +39,8 @@ class Todo(BaseModel):
     completed_at: Optional[str] = None
     due_date: Optional[str] = None
 
-    @validator("due_date")
+    @field_validator("due_date")
+    @classmethod
     def validate_date_format(cls, due_date_value: Optional[str]) -> Optional[str]:
         """
         Validate the format of the due date.
