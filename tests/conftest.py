@@ -1,10 +1,7 @@
 import pytest
+from pathlib import Path
+from todo_table.fire_cli import TodoTableCLI
 from todo_table.todo import Todo, Todos
-
-
-# Helper function to mock current time for testing
-def mock_current_time() -> str:
-    return "2024-05-26 12:00:00"
 
 
 @pytest.fixture
@@ -17,7 +14,17 @@ def todos():
     return todos
 
 
-# Mocking the default factory function for Todo
-@pytest.fixture(autouse=True)
-def mock_current_time_formatted(monkeypatch):
-    monkeypatch.setattr("todo_table.todo.current_time_formatted", mock_current_time)
+@pytest.fixture
+def todo():
+    todo = Todo(name="Write code", created_at="2024-05-25 11:00:00")
+    return todo
+
+
+@pytest.fixture
+def dummy_file() -> Path:
+    return Path("tests/dummy_path.json")
+
+
+@pytest.fixture
+def todo_table_cli() -> TodoTableCLI:
+    return TodoTableCLI()

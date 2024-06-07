@@ -1,52 +1,67 @@
 from typing import Optional
 import fire
-from todo_table.todo import Todo, Todos, current_time_formatted, fetch_todo
-from todo_table.database import write_todos_to_file, load_todos_from_file
+
+# from todo_table.todo import Todo, Todos, current_time_formatted, fetch_todo
+from todo_table import todo
+
+# from todo_table.database import write_todos_to_file, load_todos_from_file
+from todo_table import database
 from pathlib import Path
 from prettytable import PrettyTable
 
-TODO_TABLE_FILE = Path.home() / "todo_table.json"
-
 
 class TodoTableCLI:
-    def init(self) -> None:
-        init_todos = Todos(todos=[])
-        write_todos_to_file(todos=init_todos, todos_file=TODO_TABLE_FILE)
+    def init(self, database_file: str | Path = Path.home() / "todo_table.json") -> None:
+        database_file = Path(database_file)
+        init_todos = todo.Todos(todos=[])
+        database.write_todos_to_file(todos=init_todos, todos_file=database_file)
 
-    def add(self, name: str, due: Optional[str] = None) -> None:
-        todo = Todo(name=name, due_date=due)
+    def add(
+        self,
+        name: str,
+        due: Optional[str] = None,
+        database_file: str | Path = Path.home() / "todo_table.json",
+    ) -> None:
+        database_file = Path(database_file)
+        todo_to_add = todo.Todo(name=name, due_date=due)
 
-        todos = load_todos_from_file(todos_file=TODO_TABLE_FILE)
-        todos.todos.append(todo)
+        todos = database.load_todos_from_file(todos_file=database_file)
+        todos.todos.append(todo_to_add)
 
-        write_todos_to_file(todos=todos, todos_file=TODO_TABLE_FILE)
+        database.write_todos_to_file(todos=todos, todos_file=database_file)
 
-    def done(self, id: int) -> None:
+    def done(
+        self, id: int, database_file: str | Path = Path.home() / "todo_table.json"
+    ) -> Optional[todo.Todo]:
+        database_file = Path(database_file)
         offset_id = id - 1  # to offset adding 1 to the index in show
-        todos = load_todos_from_file(todos_file=TODO_TABLE_FILE)
-        todo = fetch_todo(todos=todos, id=offset_id)
-        if todo is not None:
+        todos = database.load_todos_from_file(todos_file=database_file)
+        fetched_todo = todo.fetch_todo(todos=todos, id=offset_id)
+        if fetched_todo is not None:
             del todos.todos[offset_id]
-            print(f"Todo {todo.name} completed")
-            write_todos_to_file(todos=todos, todos_file=TODO_TABLE_FILE)
+            print(f"Todo {fetched_todo.name} completed")
+            database.write_todos_to_file(todos=todos, todos_file=database_file)
+            return fetched_todo
         else:
             print(f"No todo with ID {str(id)} found")
+            return None
 
-    def show(self) -> None:
+    def show(self, database_file: str | Path = Path.home() / "todo_table.json") -> None:
+        database_file = Path(database_file)
         table = PrettyTable()
         table.field_names = ["Id", "Name", "Created At", "Completed At", "Due Date"]
 
-        todos = load_todos_from_file(todos_file=TODO_TABLE_FILE)
+        todos = database.load_todos_from_file(todos_file=database_file)
 
-        for index, todo in enumerate(todos.todos):
+        for index, to_do in enumerate(todos.todos):
             table_index = index + 1  # so the ids start at 1
             table.add_row(
                 [
                     table_index,
-                    todo.name,
-                    todo.created_at,
-                    todo.completed_at,
-                    todo.due_date,
+                    to_do.name,
+                    to_do.created_at,
+                    to_do.completed_at,
+                    to_do.due_date,
                 ]
             )
 
