@@ -15,7 +15,6 @@ fire = "^0.6.0"
 
 [tool.poetry.scripts]
 todotable = "todo_table.cli:cli"
-firetodotable = "todo_table.fire_cli:fire_cli"
 
 
 [tool.poetry.group.dev.dependencies]
