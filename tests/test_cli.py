@@ -1,4 +1,4 @@
-from todo_table.fire_cli import TodoTableCLI
+from todo_table.cli import TodoTableCLI
 from todo_table.database import write_todos_to_file
 from todo_table.todo import Todos, Todo
 from pathlib import Path

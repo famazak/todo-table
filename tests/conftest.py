@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from todo_table.fire_cli import TodoTableCLI
+from todo_table.cli import TodoTableCLI
 from todo_table.todo import Todo, Todos
 
 
