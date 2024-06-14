@@ -15,6 +15,7 @@ class TodoTableCLI:
         database_file = Path(database_file)
         init_todos = todo.Todos(todos=[])
         database.write_todos_to_file(todos=init_todos, todos_file=database_file)
+        print(f"todotable successfully initialized at {database_file}")
 
     def add(
         self,
